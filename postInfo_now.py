@@ -1,7 +1,9 @@
-import argparser
+import argparse
 import tweepy
 from datetime import datetime, date, timedelta
-import configSettings_ppe
+import time
+import imp
+#import configSettings_ppe
 
 def GetArgs():
     parser = argparse.ArgumentParser(description=__file__)
@@ -30,8 +32,11 @@ def GetArgs():
 ### useful functions
 ######################
 
-def postInfo(tweet):
+def postInfo(tweet, configPath):
     print "string to tweet:\n"+tweet
+    #sys.path.insert(0, "../configs")
+    #import configSettings_ppe as configSettings
+    configSettings = imp.load_source('something', configPath)
     api=configSettings.get_api()
     tweet = str(tweet)+" at:"+str(datetime.now()) # add time to avoid repeated tweets
     status = api.update_status(status=tweet)
@@ -46,12 +51,11 @@ def main():
 
     argDict=GetArgs()
 
-    sys.path.insert(0, argDict['config'])
 
     tweetStr=argDict['tweet']
     for h in argDict['hash']:
         tweetStr+=" #"+str(h)
-    postInfo(tweetStr)
+    postInfo(tweetStr, argDict['config'])
 
 
 
